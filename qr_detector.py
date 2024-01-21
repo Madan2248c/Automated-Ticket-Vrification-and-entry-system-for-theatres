@@ -10,7 +10,7 @@ class qr_detector :
         self.window_name = "QR Detector"
 
         self.qcd = cv2.QRCodeDetector()
-        self.cap = cv2.VideoCapture(self.camera_id)
+        # self.cap = cv2.VideoCapture(self.camera_id)
     
     def start(self) :
         while True :
@@ -33,3 +33,15 @@ class qr_detector :
 
         cv2.destroyWindow(self.window_name)
 
+    def detectfromaframe(self,frame):
+        ret_qr, decoded_info, points, _ = self.qcd.detectAndDecodeMulti(frame)
+        if ret_qr:
+            for s, p in zip(decoded_info, points):
+                if s:
+                    self.output = s
+                    color = (0, 255, 0)
+                else:
+                    color = (0, 0, 255)
+                frame = cv2.polylines(frame, [p.astype(int)], True, color, 8)
+        return frame
+    

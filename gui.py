@@ -14,7 +14,6 @@ vid.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
   
 # Create a GUI app 
 app = Tk() 
-  
 # Bind the app with Escape keyboard to 
 # quit app whenever pressed 
 app.bind('<Escape>', lambda e: app.quit()) 

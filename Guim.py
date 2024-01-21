@@ -1,62 +1,62 @@
+import tkinter as tk
 from customtkinter import *
-from tkinter import *
 import cv2
 from PIL import Image, ImageTk
 import qr_detector
 
-vid = cv2.VideoCapture(0)
-width, height = 800, 600
-vid.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-vid.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
+class QRApp:
+    def __init__(self, root):
+        self.root = root
+        self.detector = None
+        self.label_widget = None
+        self.mainpage()
 
-def open_camera():
-    global vid
-    if not vid.isOpened():
-        vid = cv2.VideoCapture(0)
-        vid.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-        vid.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+    def mainpage(self):
+        self.root.geometry("1920x1080")
+        self.root._set_appearance_mode("System")
 
-    ret, frame = vid.read()
-    
+        self.login_btn = CTkButton(master=self.root, text="Login")
+        self.login_btn.place(x=1375, y=25)
 
-    if not ret or frame is None:
-        print("Error: Failed to capture frame")
-        return
-    
-    detector = qr_detector.qr_detector()
+        self.tabview = CTkTabview(master=self.root)
+        self.tabview.pack(expand=True, fill="both", padx=0, pady=50)
 
-    newframe = detector.detectfromaframe(frame)
-    opencv_image = cv2.cvtColor(newframe, cv2.COLOR_BGR2RGBA)
+        self.tabview.add('Entry')
+        self.tabview.add('Exit')
 
-    captured_image = Image.fromarray(opencv_image)
+        entry_frame = CTkFrame(master=self.tabview.tab('Entry'), border_width=2)
+        entry_frame.pack(expand=True, fill="both")
+        self.label_widget = CTkLabel(master=entry_frame, text="")
+        self.label_widget.pack()
 
-    ctkimg = CTkImage(dark_image=captured_image, light_image=captured_image, size=(800, 600))
+        start_cam_btn = CTkButton(master=entry_frame, text="Start cam", command=self.create_detector)
+        start_cam_btn.pack()
 
-    label_widget.configure(image=ctkimg)
-    label_widget.after(10, open_camera)
+        label1 = CTkLabel(master=self.tabview.tab('Entry'), text="This is Entry Side")
+        label1.pack(padx=20, pady=20)
 
+        label2 = CTkLabel(master=self.tabview.tab('Exit'), text="This is exit side")
+        label2.pack(padx=20, pady=20)
 
-app = CTk()
-app.geometry("1920x1080")
+    def create_detector(self):
+        self.detector = qr_detector.QrDetector()
+        self.open_camera()
 
-tabview = CTkTabview(master=app)
-tabview.pack(expand=True, fill="both")
+    def open_camera(self):
+        new_frame, output = self.detector.detect_from_a_frame()
+        opencv_image = cv2.cvtColor(new_frame, cv2.COLOR_BGR2RGBA)
 
-tabview.add('Entry')
-tabview.add('Exit')
+        captured_image = Image.fromarray(opencv_image)
 
-entryFrame = CTkFrame(master=tabview.tab('Entry'), fg_color='#8D6F3A', border_width=2)
-entryFrame.pack(expand=True, fill="both")
-label_widget = CTkLabel(master=entryFrame, text="")
-label_widget.pack()
-startcambtn = CTkButton(master=entryFrame, text="Start cam", command=open_camera)
-startcambtn.pack()
+        ctk_img = CTkImage(dark_image=captured_image, light_image=captured_image, size=(800, 600))
 
-label1 = CTkLabel(master=entryFrame, text="This is Entry Side")
-label1.pack(padx=20, pady=20)
+        self.label_widget.configure(image=ctk_img)
+        
+        if len(output) <= 0:
+            self.label_widget.after(10, self.open_camera)
+        else:
+            self.label_widget.configure(image=None)
+            self.label_widget.configure(text=output)
+            print(output)
 
-label2 = CTkLabel(master=tabview.tab('Exit'), text="This is exit side")
-label2.pack(padx=20, pady=20)
-
-app.mainloop()

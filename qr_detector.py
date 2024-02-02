@@ -51,7 +51,7 @@ class QrDetector:
 
                 image_copy = image.copy()
                 cv2.circle(image_copy, (right_ear_x, right_ear_y), 8, (0, 0, 255), -1)
-                image = cv2.cvtColor(image_copy, cv2.COLOR_RGB2BGR)
+                image = cv2.cvtColor(image_copy, cv2.COLOR_BGR2RGB)
 
                 if right_ear_x < middle_x and self.prev_right_ear_x >= middle_x:
                     self.crossing_count += 1

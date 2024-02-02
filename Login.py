@@ -2,9 +2,11 @@ import tkinter as tk
 from tkinter import messagebox
 from customtkinter import *
 from Guim import QRApp
+import databasemanager
 class LoginPage:
     def __init__(self, master):
         self.master = master
+
         master.geometry("1920x1080")
         master._set_appearance_mode("System")
         master.title("Login Page")
@@ -19,6 +21,13 @@ class LoginPage:
 
         self.frame = CTkFrame(master=self.canvas, bg_color="#161618", fg_color="#161618")
         self.canvas.create_window((0, 0), window=self.frame, anchor=tk.NW)
+
+        self.manager = databasemanager.DatabaseManager(
+        host='localhost',
+        username='root',
+        password='Madan@333',
+        database='automated_entry_system'
+        )
 
         self.create_widgets()
 
@@ -48,12 +57,15 @@ class LoginPage:
         username = self.user_entry.get()
         password = self.user_pass.get()
 
-        if username == "ABC" and password == "123":
-            messagebox.showinfo("Login Successful", "Welcome, ABC!")
+        result = self.manager.check_user(username,password)
+
+        if result:
+            messagebox.showinfo("Login Successful", "Welcome, " + result[0][1] + "!")
             self.master.destroy()
             root1 = CTk()
             app = QRApp(root1)
             root1.mainloop()
+        
         else:
             messagebox.showerror("Login Failed", "Invalid username or password")
 

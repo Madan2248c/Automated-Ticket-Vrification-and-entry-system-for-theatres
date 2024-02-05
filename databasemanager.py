@@ -39,31 +39,66 @@ class DatabaseManager:
             return result
         else:
             return False
+        
+    def check_ticket(self,ticket_id):
+        if(self.check_if_entered(ticket_id)):
+            return 500
+        else:   
+            query = "SELECT * FROM tickets WHERE ticket_id = %s"
+            values = (ticket_id,)
+            result = self.execute_query(query, values)
+            if result:
+                self.add_to_entered(ticket_id)
+                return result
+            else:
+                return 400
+            
+
+    def check_if_entered(self,ticket_id):
+        query = "SELECT * FROM entered_tickets" 
+        result = self.execute_query(query)
+        for row in result:
+            if row[0] == ticket_id:
+                return True
+        return False
+    
+    def add_to_entered(self,ticket_id):
+        query = "INSERT INTO entered_tickets (ticket_id) VALUES (%s)"
+        values = (ticket_id,)
+        self.execute_query(query, values)
+        self.connection.commit()
 
 
     def close_connection(self):
         if self.connection:
             self.connection.close()
 
-if __name__ == "__main__":
-    # Create an instance of the DatabaseManager
-    db_manager = DatabaseManager(
-        host='localhost',
-        username='root',
-        password='Madan@333',
-        database='automated_entry_system'
-    )
+# """# if __name__ == "__main__":
+#     # Create an instance of the DatabaseManager
+#     db_manager = DatabaseManager(
+#         host='localhost',
+#         username='root',
+#         password='Madan@333',
+#         database='automated_entry_system'
+#     )
 
-    try:
-        # Execute the SELECT query
-        query = "SELECT * FROM employees"
-        results = db_manager.execute_query(query)
+    # try:
+    #     # db_manager.add_to_entered(20)
+    #     # print(db_manager.check_ticket(5))
 
-        # Print the results
-        for row in results:
-            print(row)
-        res = db_manager.check_user("johndoe", "securepassword")
-        print(res)
-    finally:
-        # Close the database connection
-        db_manager.close_connection()
+    #     # Check if the user exists
+    #     # res = db_manager.check_user("johndoe", "securepassword")
+    #     # print(res)
+    #     # Execute the SELECT query
+    #     # query = "SELECT * FROM entered_tickets"
+    #     # results = db_manager.execute_query(query)
+
+    #     # Print the results
+    #     # for row in results:
+    #         # print(row[0])
+    #     # res = db_manager.check_user("johndoe", "securepassword")
+    #     # print(res)
+    # finally:
+    #     # Close the database connection
+    #     db_manager.close_connection()
+# """

@@ -2,8 +2,10 @@ import tkinter as tk
 from customtkinter import *
 import cv2
 from PIL import Image, ImageTk
+import databasemanager
 import qr_detector
 import time
+import json
 
 
 class QRApp:
@@ -13,6 +15,12 @@ class QRApp:
         self.label_widget = None
         self.start_cam_btn = None
         self.no_of_allowedpersons = None
+        self.manager = databasemanager.DatabaseManager(
+        host='localhost',
+        username='root',
+        password='Madan@333',
+        database='automated_entry_system'
+        )
         self.mainpage()
 
     def mainpage(self):
@@ -65,9 +73,11 @@ class QRApp:
         else:
             self.label_widget.configure(image=None)
             # self.label_widget.configure(text=output)
+            ticket = json.loads(output)
+            print(ticket[0]['ticket_id'])
             self.no_of_allowedpersons.configure(text=output)
-            print(output)
-            self.start_pc()
+            # print(output)
+            # self.start_pc()
 
     def start_pc(self):
         time.sleep(2)

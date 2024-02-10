@@ -1,5 +1,6 @@
 #qr_detector.py
 
+import time
 import cv2
 import mediapipe as mp
 
@@ -16,6 +17,8 @@ class QrDetector:
         )
         self.prev_right_ear_x = 0
         self.crossing_count = 0
+        self.newframe1 = None
+        self.output1 = None
 
 
     def detect_from_a_frame(self):
@@ -62,3 +65,11 @@ class QrDetector:
         cv2.putText(image, f"Crossings: {self.crossing_count}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
         return image, self.crossing_count
+    
+    def count_persons_in10sec(self,start_time):
+        cmp = 0
+        while time.time() - start_time < 3 :
+            self.newframe1, self.output1 = self.detector()
+            return self.newframe1,self.output1,cmp
+        cmp = 1
+        return self.newframe1,self.output1,cmp

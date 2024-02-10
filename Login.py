@@ -63,13 +63,10 @@ class LoginPage:
             messagebox.showinfo("Login Successful", "Welcome, " + result[0][1] + "!")
             self.master.destroy()
             root1 = CTk()
-            app = QRApp(root1)
+            app = QRApp(root1,result[0][1])
             root1.mainloop()
         
         else:
             messagebox.showerror("Login Failed", "Invalid username or password")
 
-if __name__ == "__main__":
-    root = CTk()
-    app = LoginPage(root)
-    root.mainloop()
+            

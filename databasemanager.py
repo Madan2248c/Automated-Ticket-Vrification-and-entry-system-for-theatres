@@ -97,6 +97,28 @@ class DatabaseManager:
         values = (ticket_id,no_of_persons)
         self.execute_query(query, values)
         self.connection.commit()
+
+    def all_employees(self):
+        query = "SELECT * FROM employees"
+        result = self.execute_query(query)
+        return result
+    
+    def all_tickets(self):
+        query = "SELECT * FROM tickets"
+        result = self.execute_query(query)
+        return result
+    
+    def all_entered_tickets(self):
+        query = "SELECT * FROM entered_tickets"
+        result = self.execute_query(query)
+        return result
+    
+    def all_exit_tickets(self):
+        query = "SELECT * FROM exit_tickets"
+        result = self.execute_query(query)
+        return result
+
+
 if __name__ == "__main__":
     # Create an instance of the DatabaseManager
     db_manager = DatabaseManager(

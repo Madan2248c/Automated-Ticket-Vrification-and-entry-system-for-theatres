@@ -172,7 +172,7 @@ class QRApp:
 
         self.label_widget.configure(image=ctk_img)
         
-        if (output) <= self.no_of_allowedpersons1:
+        if (output) < self.no_of_allowedpersons1:
             self.label_widget.after(10, self.startpersoncounter)
         else:
             self.label_widget.configure(image=None)
@@ -185,8 +185,3 @@ class QRApp:
             self.root.destroy()
         else:
             return
-        
-if __name__ == "__main__":
-    root = CTk()
-    app = QRApp(root,"Madan")
-    root.mainloop()

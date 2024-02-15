@@ -68,7 +68,7 @@ class QrDetector:
     
     def count_persons_in10sec(self,start_time):
         cmp = 0
-        while time.time() - start_time < 3 :
+        while time.time() - start_time < 10 :
             self.newframe1, self.output1 = self.detector()
             return self.newframe1,self.output1,cmp
         cmp = 1

@@ -93,10 +93,17 @@ class DatabaseManager:
             self.connection.close()
 
     def add_to_exit(self,ticket_id,no_of_persons):
-        query = "INSERT INTO exit_tickets (ticket_id,number_of_persons_left) VALUES (%s,%s)"
-        values = (ticket_id,no_of_persons)
-        self.execute_query(query, values)
-        self.connection.commit()
+        if self.exit_check(ticket_id) is not None:
+            query = "UPDATE exit_tickets SET number_of_persons_left = number_of_persons_left + %s WHERE ticket_id = %s"
+            values = (no_of_persons,ticket_id)
+            self.execute_query(query, values)
+            self.connection.commit()
+            return
+        else:
+            query = "INSERT INTO exit_tickets (ticket_id,number_of_persons_left) VALUES (%s,%s)"
+            values = (ticket_id,no_of_persons)
+            self.execute_query(query, values)
+            self.connection.commit()
 
     def all_employees(self):
         query = "SELECT * FROM employees"
@@ -117,18 +124,26 @@ class DatabaseManager:
         query = "SELECT * FROM exit_tickets"
         result = self.execute_query(query)
         return result
+    
+    def exit_check(self,ticket_id):
+        query = "SELECT * FROM exit_tickets where ticket_id = %s"
+        result = self.execute_query(query, (ticket_id,))
+        if result:
+            return result
+        else:
+            return None
 
 
-if __name__ == "__main__":
-    # Create an instance of the DatabaseManager
-    db_manager = DatabaseManager(
-        host='localhost',
-        username='root',
-        password='Madan@333',
-        database='automated_entry_system'
-    )
+# if __name__ == "__main__":
+#     # Create an instance of the DatabaseManager
+#     db_manager = DatabaseManager(
+#         host='localhost',
+#         username='root',
+#         password='Madan@333',
+#         database='automated_entry_system'
+#     )
 
-    db_manager.check_ticket(5)
+#     db_manager.check_ticket(5)
 
     # try:
     #     # db_manager.add_to_entered(20)

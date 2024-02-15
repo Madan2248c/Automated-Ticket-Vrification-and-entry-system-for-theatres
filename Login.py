@@ -65,8 +65,5 @@ class LoginPage:
             root1 = CTk()
             app = QRApp(root1,result[0][1])
             root1.mainloop()
-        
         else:
             messagebox.showerror("Login Failed", "Invalid username or password")
-
-            

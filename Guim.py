@@ -1,7 +1,7 @@
 from tkinter import messagebox 
 from customtkinter import *
 import cv2
-from PIL import Image, ImageTk
+from PIL import Image
 import databasemanager
 import detectors
 import time
@@ -29,6 +29,7 @@ class QRApp:
         self.start_time = None
         self.no_of_left = None
         self.exit_ticket = None
+        self.max_per = 0
         self.mainpage()
 
     def mainpage(self):
@@ -101,13 +102,27 @@ class QRApp:
             self.exit_label.configure(text=output)
             self.exit_ticket = json.loads(output)
             self.ini_exit_pc()
+
     def ini_exit_pc(self):
         self.start_time = time.time()
+        self.maxpersons()
+
+    def maxpersons(self):
+        out = self.manager.check_if_exit(self.exit_ticket[0]['ticket_id'])
+        if out is not None:
+            self.max_per = self.exit_ticket[0]['persons_allowed'] - out[1]
+        else:
+            self.max_per = self.exit_ticket[0]['persons_allowed']
+        messagebox.showinfo("Max persons","maximum only "+str(self.max_per) + "can go out")
         self.exit_pc()
+
     def exit_pc(self):
         self.exit_label.configure(text=None)
         new_frame,output,cmp = self.detector.count_persons_in10sec(self.start_time)
-        if cmp == 1:
+        if cmp == 1 or output >= self.max_per:
+
+            if output >= self.max_per:
+                messagebox.showinfo("Persons","Maximum number of persons have been exited")
             self.exit_label.configure(image=None)
             self.no_of_left.configure(text=output)
             self.exit_cam_btn = CTkButton(master=self.exit_frame, text="Start cam", command=self.exit_detector)
@@ -123,8 +138,15 @@ class QRApp:
             
     def create_detector(self):
         self.start_cam_btn.destroy()
-        self.detector = detectors.QrDetector()
-        self.open_camera()
+        self.label_widget.configure(text="")
+        if self.detector is not None:
+            del self.detector
+            self.detector = detectors.QrDetector()
+            self.open_camera()
+        else:
+            self.detector = detectors.QrDetector()
+            self.open_camera()
+
 
     def open_camera(self):
         new_frame, output = self.detector.detect_from_a_frame()
@@ -142,20 +164,22 @@ class QRApp:
             self.label_widget.configure(image=None)
             ticket = json.loads(output)
             res,nop = self.manager.check_ticket(ticket[0]['ticket_id'])
-            print(res,nop)
             if(res == 200):
                 self.no_of_allowedpersons1 = nop
             elif(res == 500):
-                self.label_widget.configure(text="Already entered")
+                messagebox.showinfo("Ticketet status","Already entered")
+                self.create_detector()
                 return
             elif(res == 400):
-                self.label_widget.configure(text="Invalid Ticket")
+                messagebox.showinfo("Ticketet status","Already entered")
+                self.create_detector()
                 return
             else:
-                self.label_widget.configure(text="You can enter")
+                # self.label_widget.configure(text="You can enter")
                 print(ticket[0]['persons_allowed'])
                 self.no_of_allowedpersons1 = ticket[0]['persons_allowed']
-                self.no_of_allowedpersons.configure(text=output)
+                no_per = "Number of persons to enter is " + str(ticket[0]['persons_allowed'])
+                self.no_of_allowedpersons.configure(text=no_per)
             self.start_pc()
 
     def start_pc(self):
@@ -177,6 +201,7 @@ class QRApp:
         else:
             self.label_widget.configure(image=None)
             self.label_widget.configure(text=output)
+            self.create_detector()
             print(output)
 
     def logout(self):
@@ -185,3 +210,8 @@ class QRApp:
             self.root.destroy()
         else:
             return
+        
+if __name__ == "__main__":
+    root = CTk()
+    app = QRApp(root,"madan")
+    root.mainloop()

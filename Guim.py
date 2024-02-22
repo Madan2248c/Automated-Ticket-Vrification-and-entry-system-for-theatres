@@ -69,12 +69,9 @@ class QRApp:
         self.no_of_left.pack()
 
         self.exit_label = CTkLabel(master=self.exit_frame, text="")
-        self.exit_label.pack()
-               
-
+        self.exit_label.pack()               
         label2 = CTkLabel(master=self.tabview.tab('Exit'), text="This is exit side")
         label2.pack(padx=20, pady=20)
-
 
     def exit_detector(self):
         self.exit_cam_btn.destroy()
@@ -110,9 +107,9 @@ class QRApp:
     def maxpersons(self):
         out = self.manager.check_if_exit(self.exit_ticket[0]['ticket_id'])
         if out is not None:
-            self.max_per = self.exit_ticket[0]['persons_allowed'] - out[1]
+            self.max_per = self.exit_ticket[0]['persons_allowed'] - out[1] + self.exit_ticket[0]['number_of_children']
         else:
-            self.max_per = self.exit_ticket[0]['persons_allowed']
+            self.max_per = self.exit_ticket[0]['persons_allowed'] + self.exit_ticket[0]['number_of_children']
         messagebox.showinfo("Max persons","maximum only "+str(self.max_per) + "can go out")
         self.exit_pc()
 
@@ -171,14 +168,14 @@ class QRApp:
                 self.create_detector()
                 return
             elif(res == 400):
-                messagebox.showinfo("Ticketet status","Already entered")
+                messagebox.showinfo("Ticketet status","Invalid Ticket")
                 self.create_detector()
                 return
             else:
                 # self.label_widget.configure(text="You can enter")
                 print(ticket[0]['persons_allowed'])
-                self.no_of_allowedpersons1 = ticket[0]['persons_allowed']
-                no_per = "Number of persons to enter is " + str(ticket[0]['persons_allowed'])
+                self.no_of_allowedpersons1 = ticket[0]['persons_allowed'] + ticket[0]['number_of_children']
+                no_per = "Number of persons to enter is " + str(ticket[0]['persons_allowed'] + ticket[0]['number_of_children'])
                 self.no_of_allowedpersons.configure(text=no_per)
             self.start_pc()
 

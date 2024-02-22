@@ -132,7 +132,11 @@ class DatabaseManager:
             return result
         else:
             return None
-
+        
+    def add_employee(self, employee_data):
+        query = "INSERT INTO employees (employee_id, name, phone_number, email, username, password, job_title, salary) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        self.execute_query(query, employee_data)
+        self.connection.commit()
 
 # if __name__ == "__main__":
 #     # Create an instance of the DatabaseManager

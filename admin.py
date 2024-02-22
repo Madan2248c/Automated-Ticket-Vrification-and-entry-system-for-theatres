@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-
 from databasemanager import DatabaseManager
+from tet import EmployeeFormApp
 
 class AdminPage(tk.Tk):
     def __init__(self):
@@ -30,7 +30,7 @@ class AdminPage(tk.Tk):
         tab2 = ttk.Frame(notebook)
         tab3 = ttk.Frame(notebook)
         tab4 = ttk.Frame(notebook)
-        notebook.add(tab1, text='Users')
+        notebook.add(tab1, text='Employees')
         notebook.add(tab2, text='Booked Tickets')
         notebook.add(tab3, text='Entered Tickets')
         notebook.add(tab4, text='Exit Tickets')
@@ -54,10 +54,14 @@ class AdminPage(tk.Tk):
 
         user_table.pack(fill='both', expand=True)
 
-        booked_table = ttk.Treeview(tab2, columns=('ID', 'Seat Numbers','Number of persons'))
+        add_employee_button = ttk.Button(tab1, text="Add Employee", command=self.add_employee)
+        add_employee_button.pack()
+
+        booked_table = ttk.Treeview(tab2, columns=('ID', 'Seat Numbers','Number of persons','Number of clildren'))
         booked_table.heading('ID', text='ID')
         booked_table.heading('Seat Numbers', text='Seat Numbers')
         booked_table.heading('Number of persons', text='Number of persons')
+        booked_table.heading('Number of clildren', text='Number of children')
 
         tickets = self.manager.all_tickets()
         if tickets:
@@ -93,8 +97,10 @@ class AdminPage(tk.Tk):
             exit_table.insert('', 'end', values=('No data available',))
         
         exit_table.pack(fill='both', expand=True)
-
-
+    def add_employee(self):
+        root = tk.Tk()
+        app = EmployeeFormApp(root)
+        
 if __name__ == "__main__":
     app = AdminPage()
     app.mainloop()

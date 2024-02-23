@@ -7,13 +7,13 @@ class AdminPage(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Admin Page")
-
         self.manager = DatabaseManager(
             host='localhost',
             username='root',
             password='Madan@333',
             database='automated_entry_system'
         )
+
         self.create_widgets()
         
     def create_widgets(self):

@@ -137,35 +137,3 @@ class DatabaseManager:
         query = "INSERT INTO employees (employee_id, name, phone_number, email, username, password, job_title, salary) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         self.execute_query(query, employee_data)
         self.connection.commit()
-
-# if __name__ == "__main__":
-#     # Create an instance of the DatabaseManager
-#     db_manager = DatabaseManager(
-#         host='localhost',
-#         username='root',
-#         password='Madan@333',
-#         database='automated_entry_system'
-#     )
-
-#     db_manager.check_ticket(5)
-
-    # try:
-    #     # db_manager.add_to_entered(20)
-    #     # print(db_manager.check_ticket(5))
-
-    #     # Check if the user exists
-    #     # res = db_manager.check_user("johndoe", "securepassword")
-    #     # print(res)
-    #     # Execute the SELECT query
-    #     # query = "SELECT * FROM entered_tickets"
-    #     # results = db_manager.execute_query(query)
-
-    #     # Print the results
-    #     # for row in results:
-    #         # print(row[0])
-    #     # res = db_manager.check_user("johndoe", "securepassword")
-    #     # print(res)
-    # finally:
-    #     # Close the database connection
-    #     db_manager.close_connection()
-# """

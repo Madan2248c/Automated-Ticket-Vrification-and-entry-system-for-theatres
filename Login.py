@@ -56,7 +56,6 @@ class LoginPage:
     def handle_login(self):
         username = self.user_entry.get()
         password = self.user_pass.get()
-
         result = self.manager.check_user(username,password)
 
         if result:
